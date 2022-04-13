@@ -1,7 +1,7 @@
 '''
 Description: visualize the game process
 Date: 2022-04-11 13:30:24
-LastEditTime: 2022-04-13 17:27:34
+LastEditTime: 2022-04-13 18:45:08
 '''
 from http.client import ImproperConnectionState
 import pygame
@@ -17,6 +17,8 @@ def visualization_main():
     #init game object
     gameClass=GobangGame()
     gameClass.display_chessmanual()
+    #init the chessboard view
+    chessboard_view = Chessboard(x=50,y=50,color=CHESSBOARD_BG_COLOR,id="chessboard",game_core=gameClass)
     #init pygame window
     pygame.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -27,10 +29,6 @@ def visualization_main():
     background.fill(WINDOW_BG_COLOR)
     #init the text view
     text_view = TextView(WINDOW_WIDTH/2,WINDOW_HEIGHT/2,WINDOW_TEXT_COLOR,0,'hello',40)
-    #init the button view
-    button_view = SquareButton(WINDOW_WIDTH/2+100,WINDOW_HEIGHT/2+100,WINDOW_BUTTON_AVAILABLE_COLOR,0,WINDOW_BUTTON_HEIGHT,WINDOW_BUTTON_WIDTH,'button',20)
-    #init the chessboard view
-    chessboard_view = Chessboard(x=50,y=50,color=CHESSBOARD_BG_COLOR,id="chessboard",game_core=gameClass)
     #game running flags
     isRunning=True
     #fps controller
@@ -57,8 +55,6 @@ def visualization_main():
         screen.blit(background,(0,0))
         #draw the text view
         text_view.draw(screen)
-        #draw the button view
-        button_view.draw(screen)
         #draw the chessboard
         chessboard_view.draw(screen,gameClass.get_cur_player_type(),gameClass.get_cur_player_number())
         #draw the chessman
@@ -69,7 +65,7 @@ def visualization_main():
         #update the game
         game_result=gameClass.update_game_turn()
         if game_result!=GAME_STILL_PLAYING:
-            isRunning=False
+            gameClass.stop_game_process()
             print("game end with result:",game_result)
     #quit the game
     pygame.quit()

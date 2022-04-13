@@ -1,7 +1,7 @@
 '''
 Description: define view object for visualization
 Date: 2022-04-11 13:44:01
-LastEditTime: 2022-04-13 17:23:06
+LastEditTime: 2022-04-13 18:42:21
 '''
 import pygame
 from abc import ABCMeta, abstractmethod
@@ -181,7 +181,7 @@ class Chessboard(View):
                 chessman_in_row.append(Chessman(x=self.x+j*self.grid_size+PADDING_RATIO*self.grid_size,y=self.y+i*self.grid_size+PADDING_RATIO*self.grid_size,color=self.color,id=i*self.col+j,r=self.r))
             self.chessman_list.append(chessman_in_row)
 
-    def draw(self,screen,plaer_type:int,cur_player:int):
+    def draw(self,screen,player_type:int,cur_player:int):
         #draw the chessboard
         #background
         pygame.draw.rect(screen,self.color,(self.x,self.y,(self.col+PADDING_RATIO*2-1)*self.grid_size,(self.row+PADDING_RATIO*2-1)*self.grid_size))
@@ -193,9 +193,9 @@ class Chessboard(View):
         #draw the chessman
         for i in range(self.row):
             for j in range(self.col):
-                if plaer_type==GAME_HUMAN_MOVE:
+                if player_type==GAME_HUMAN_MOVE:
                     self.chessman_list[i][j].draw(screen,cur_player)
-                elif plaer_type==GAME_AI_MOVE:
+                elif player_type==GAME_AI_MOVE or player_type==GAME_NO_ONE_MOVE:
                     self.chessman_list[i][j].draw(screen,SPACE_NUMBER) #disable the animation on touch
 
 

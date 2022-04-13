@@ -1,7 +1,7 @@
 '''
 Description: this file define some basic constant variables for the game
 Date: 2022-04-11 10:34:14
-LastEditTime: 2022-04-13 11:02:44
+LastEditTime: 2022-04-13 18:38:33
 '''
 #the board size definitions
 BOARD_HEIGHT=15
@@ -17,6 +17,7 @@ GAME_STILL_PLAYING=3
 
 GAME_AI_MOVE=2
 GAME_HUMAN_MOVE=1
+GAME_NO_ONE_MOVE=0
 
 #visualization constants
 #FPS

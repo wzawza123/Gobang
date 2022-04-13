@@ -1,7 +1,7 @@
 '''
 Description: this file define a Gobang game class which control the basic game process
 Date: 2022-04-11 10:33:06
-LastEditTime: 2022-04-13 17:27:32
+LastEditTime: 2022-04-13 18:37:58
 '''
 from game.definitions import *
 from game.common import *
@@ -74,6 +74,14 @@ class GobangGame:
             pass
         else:
             return end_result
+    '''
+    name: stop game process
+    description: simply stop game process
+    param {*} self
+    return {*}
+    '''    
+    def stop_game_process(self)-> None:
+        self.curPlayerType=GAME_NO_ONE_MOVE
 def main():
     game=GobangGame()
     # game.display_chessmanual()
