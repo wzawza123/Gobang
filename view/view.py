@@ -1,7 +1,7 @@
 '''
 Description: define view object for visualization
 Date: 2022-04-11 13:44:01
-LastEditTime: 2022-04-13 18:42:21
+LastEditTime: 2022-04-13 20:29:42
 '''
 import pygame
 from abc import ABCMeta, abstractmethod
@@ -190,6 +190,10 @@ class Chessboard(View):
             pygame.draw.line(screen,GRID_COLOR,(self.x+PADDING_RATIO*self.grid_size,self.y+i*self.grid_size+PADDING_RATIO*self.grid_size),(self.x+self.col*self.grid_size,self.y+i*self.grid_size+PADDING_RATIO*self.grid_size))
         for j in range(self.col):
             pygame.draw.line(screen,GRID_COLOR,(self.x+j*self.grid_size+PADDING_RATIO*self.grid_size,self.y+PADDING_RATIO*self.grid_size),(self.x+j*self.grid_size+PADDING_RATIO*self.grid_size,self.y+self.row*self.grid_size))
+        #update chessman information
+        for i in range(self.row):
+            for j in range(self.col):
+                self.chessman_list[i][j].fill=self.game_core.chessManual[i][j]
         #draw the chessman
         for i in range(self.row):
             for j in range(self.col):

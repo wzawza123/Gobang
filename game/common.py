@@ -1,8 +1,9 @@
 '''
 Description: this file define some common functions that are used in the game
 Date: 2022-04-11 10:33:41
-LastEditTime: 2022-04-13 17:28:47
+LastEditTime: 2022-04-13 20:21:46
 '''
+from typing import Tuple
 from game.definitions import *
 
 '''
@@ -50,3 +51,16 @@ def game_over_check(board_state:list[list[int]])->int:
     if boardFull:
         return GAME_END_DRAW
     return GAME_STILL_PLAYING
+'''
+name:get_position_by_number
+description: get the position of the chessman by its number
+param {list} chess_manual the chessman manual
+param {int} number the number of the chessman to find
+return {*} the position of the chessman -1,-1 if not found
+'''
+def get_position_by_number(chess_manual:list[list[int]],number:int)->Tuple[int,int]:
+    for i in range(BOARD_HEIGHT):
+        for j in range(BOARD_WIDTH):
+            if chess_manual[i][j]==number:
+                return i,j
+    return -1,-1
