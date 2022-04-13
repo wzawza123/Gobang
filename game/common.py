@@ -1,7 +1,7 @@
 '''
 Description: this file define some common functions that are used in the game
 Date: 2022-04-11 10:33:41
-LastEditTime: 2022-04-11 18:51:40
+LastEditTime: 2022-04-13 17:28:47
 '''
 from game.definitions import *
 
@@ -17,7 +17,7 @@ def game_over_check(board_state:list[list[int]])->int:
     dirVecY=[0,1,1,1]
     #check all
     #iteration between directions
-    for dirIndex in range(dirVecX):
+    for dirIndex in range(len(dirVecX)):
         #iteration the start position
         for i in range(BOARD_HEIGHT):
             for j in range(BOARD_WIDTH):

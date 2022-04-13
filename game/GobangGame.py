@@ -1,7 +1,7 @@
 '''
 Description: this file define a Gobang game class which control the basic game process
 Date: 2022-04-11 10:33:06
-LastEditTime: 2022-04-11 18:51:00
+LastEditTime: 2022-04-13 17:27:32
 '''
 from game.definitions import *
 from game.common import *
@@ -11,7 +11,6 @@ class GobangGame:
     chessManual=[[0 for i in range(BOARD_WIDTH)] for j in range(BOARD_HEIGHT)] #the game manual record the whole game process
     curIndex=1 #the index of next run
     curPlayerType=GAME_HUMAN_MOVE
-    print(chessManual)
     def __init__(self) -> None:
         self.restart()
     '''
@@ -42,11 +41,44 @@ class GobangGame:
 
     def get_cur_player_number(self) -> int:
         return self.curIndex
-
+    
+    def display_chessmanual(self) -> None:
+        for i in range(BOARD_HEIGHT):
+            for j in range(BOARD_WIDTH):
+                print(self.chessManual[i][j],end=" ")
+            print()
+        print()
+    '''
+    name: update_human_move
+    description: 
+    param {*} self
+    param {int} x
+    param {int} y
+    return {*}
+    '''    
+    def update_human_move(self,x:int,y:int) -> None:
+        assert(x>=0 and x<BOARD_WIDTH and y>=0 and y<BOARD_HEIGHT and self.get_cur_player_type()==GAME_HUMAN_MOVE)
+        self.chessManual[x][y]=self.curIndex
+        self.curIndex+=1
+    '''
+    name: 
+    description: 
+    param {*} self
+    return {*} the game result
+    '''    
+    def update_game_turn(self)-> int:
+        end_result=self.end_check()
+        if end_result==GAME_STILL_PLAYING:
+            # self.curPlayerType=GAME_AI_MOVE if self.curPlayerType==GAME_HUMAN_MOVE else GAME_HUMAN_MOVE    
+            return end_result
+            pass
+        else:
+            return end_result
 def main():
     game=GobangGame()
-    print(game.chessManual)
-    print(game.curIndex)
+    # game.display_chessmanual()
+    # print(game.chessManual)
+    # print(game.curIndex)
 
 if __name__ == '__main__':
     main()
