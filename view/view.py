@@ -1,7 +1,7 @@
 '''
 Description: define view object for visualization
 Date: 2022-04-11 13:44:01
-LastEditTime: 2022-04-13 20:29:42
+LastEditTime: 2022-04-13 21:31:22
 '''
 import pygame
 from abc import ABCMeta, abstractmethod
@@ -117,7 +117,6 @@ class SquareButton(Button):
             return True
         else:
             return False
-
 #this is the class of chessman
 class Chessman(Button):
     def __init__(self,x,y,color,id,r=CHESSMAN_SIZE,fill=SPACE_NUMBER) -> None:
