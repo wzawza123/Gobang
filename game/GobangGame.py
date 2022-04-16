@@ -17,34 +17,29 @@ class GobangGame:
     def __init__(self) -> None:
         self.restart()
 
-    '''
-    name: restart
-    description: restart the whole game
-    param {*} self
-    '''
-
     def restart(self) -> None:
+        """
+        reset the game
+        Returns:None
+
+        """
         self.chessManual = [[0 for i in range(BOARD_WIDTH)] for j in range(BOARD_HEIGHT)]
         self.curIndex = 1
 
-    '''
-    name: endCheck
-    description: check the game is over or not and return the result
-    param {*} self
-    return {*} the game result according to definitions.py
-    '''
-
     def end_check(self) -> int:
+        """
+        check whether the game is over
+        Returns: the result as is defined in definitions.py
+
+        """
         return game_over_check(self.chessManual)
 
-    '''
-    name: get_cur_player_type
-    description: get the type of current player
-    param {*} self
-    return {*} GAME_HUMAN_MOVE or GAME_AI_MOVE
-    '''
-
     def get_cur_player_type(self) -> int:
+        """
+        get the current player type
+        Returns: the current player type
+
+        """
         return self.curPlayerType
 
     def get_cur_player_number(self) -> int:
@@ -57,30 +52,28 @@ class GobangGame:
             print()
         print()
 
-    '''
-    name: update_human_move
-    description: 
-    param {*} self
-    param {int} x
-    param {int} y
-    return {*}
-    '''
-
     def update_human_move(self, x: int, y: int) -> None:
+        """
+        update the game process by human move
+        Args:
+            x: the x coordinate of the chessman
+            y: the y coordinate of the chessman
+
+        Returns: the result of end check after the move
+
+        """
         assert (0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT and self.get_cur_player_type() == GAME_HUMAN_MOVE)
         self.chessManual[x][y] = self.curIndex
         self.curIndex += 1
         # update the game
         game_result = self.update_game_turn_forward()
 
-    '''
-    name: 
-    description: 
-    param {*} self
-    return {*} the game result
-    '''
-
     def update_game_turn_forward(self) -> int:
+        """
+        update the game process
+        Returns:the end check result
+
+        """
         self.display_chessmanual()
         end_result = self.end_check()
         if end_result == GAME_STILL_PLAYING:

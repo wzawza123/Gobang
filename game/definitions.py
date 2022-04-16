@@ -1,8 +1,8 @@
-'''
+"""
 Description: this file define some basic constant variables for the game
 Date: 2022-04-11 10:34:14
 LastEditTime: 2022-04-13 20:34:19
-'''
+"""
 # the board size definitions
 BOARD_HEIGHT = 15
 BOARD_WIDTH = 15
@@ -34,12 +34,16 @@ GRID_SIZE = 30
 PADDING_RATIO = 1  # the ratio of padding between grid and board boundary
 GRID_WIDTH = 1  # the width of the grid lines
 WINDOW_BUTTON_TEXT_SIZE = 20
+
+PLOT_VIEW_PADDING = 10
 # colors
 WINDOW_BG_COLOR = (127, 127, 127)
 WINDOW_TEXT_COLOR = (0, 0, 0)
 
 WINDOW_BUTTON_AVAILABLE_COLOR = (0, 255, 0)
 WINDOW_BUTTON_UNAVAILABLE_COLOR = (255, 0, 0)
+
+WINDOW_PLOT_COLOR = (255, 255, 255)
 # the chessman button color
 FILL_COLOR_ODD = (0, 0, 0)
 FILL_COLOR_EVEN = (255, 255, 255)

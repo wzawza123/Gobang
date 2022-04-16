@@ -3,6 +3,7 @@ Description: visualize the game process
 Date: 2022-04-11 13:30:24
 LastEditTime: 2022-04-13 20:56:06
 """
+from random import randint
 
 import pygame
 from abc import ABCMeta, abstractmethod
@@ -34,6 +35,8 @@ def visualization_main():
     button_view = SquareButton(x=800, y=600, color=WINDOW_BUTTON_AVAILABLE_COLOR, id="undo",
                                height=WINDOW_BUTTON_HEIGHT, width=WINDOW_BUTTON_WIDTH, text="undo",
                                text_size=WINDOW_BUTTON_TEXT_SIZE)
+    # init the plot view
+    plot_view = PlotView(x=600, y=50, color=WINDOW_PLOT_COLOR, id="plot", font_size=20, width=400, height=200)
     # game running flags
     isRunning = True
     # fps controller
@@ -55,9 +58,13 @@ def visualization_main():
                 # get the mouse position
                 mouse_pos = pygame.mouse.get_pos()
                 # check if the button is clicked
-                chessboard_view.process_click(mouse_pos[0], mouse_pos[1])
+                update_index = chessboard_view.process_click(mouse_pos[0], mouse_pos[1])
+                if update_index[0] != -1 and update_index[1] != -1:
+                    # a valid move has been made
+                    plot_view.insert(randint(0, 100))
                 if button_view.is_in_button(mouse_pos[0], mouse_pos[1]):
                     gameClass.undo_move()
+                    plot_view.pop()
         # draw the background
         screen.blit(background, (0, 0))
         # draw the text view
@@ -66,6 +73,8 @@ def visualization_main():
         chessboard_view.draw(screen)
         # draw the button
         button_view.draw(screen)
+        # draw the plot
+        plot_view.draw(screen)
         # update the screen
         pygame.display.flip()
         # update game result

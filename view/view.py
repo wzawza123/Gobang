@@ -82,15 +82,16 @@ class TextView(View):
         self.text_rendered = self.font.render(self.text, True, self.color)
         screen.blit(self.text_rendered, (self.x, self.y))
 
-    '''
-    name: set_pos_middle_x
-    description: set the textview to the middle left and right
-    param {*} self
-    param {*} left left bound
-    param {*} right right bound
-    '''
-
     def set_pos_middle_x(self, left, right):
+        """
+        set the position of current view at the middle of given boundary of x
+        Args:
+            left: the left boundary of x
+            right: the right boundary of x
+
+        Returns:
+
+        """
         self.x = (left + right - self.text_rendered.get_width()) / 2
 
     def set_pos_middle_y(self, top, bottom):
@@ -104,6 +105,12 @@ class TextView(View):
     def get_text(self):
         return self.text
 
+    def get_width(self):
+        return self.text_rendered.get_width()
+
+    def get_height(self):
+        return self.text_rendered.get_height()
+
 
 # this is the class of square button with text
 class SquareButton(Button):
@@ -114,14 +121,12 @@ class SquareButton(Button):
         self.text = TextView(x, y, WINDOW_TEXT_COLOR, id, text, text_size)
         self.update_text_pos()
 
-    '''
-    name: update text pos
-    description: update the text position at the center of the button
-    param {*} self
-    return {*}
-    '''
-
     def update_text_pos(self):
+        """
+        reset the textview position
+        Returns:
+
+        """
         self.text.set_pos_middle_x(self.x, self.x + self.width)
         self.text.set_pos_middle_y(self.y, self.y + self.height)
 
@@ -150,16 +155,16 @@ class Chessman(Button):
         self.r = r
         self.fill = fill
 
-    '''
-    name: draw
-    description: draw the chessman 
-    param {*} self
-    param {*} screen
-    param {*} cur_player a number, odd,even and 0 for unavailiable
-    return {*}
-    '''
-
     def draw(self, screen, cur_player: int):
+        """
+        draw the chessman
+        Args:
+            screen: the screen surface
+            cur_player: the current player
+
+        Returns:
+
+        """
         # draw the chessman
         if self.fill == SPACE_NUMBER:
             if cur_player != SPACE_NUMBER and self.state == BUTTON_STATE_ON_TOUCH:
@@ -197,14 +202,12 @@ class Chessboard(View):
         self.row = BOARD_HEIGHT
         self.init_chessman_list()
 
-    '''
-    name: init chessman list
-    description: initialize the chessman list with the position
-    param {*} self
-    return {*}
-    '''
-
     def init_chessman_list(self):
+        """
+        initialize the chessman list
+        Returns:
+
+        """
         for i in range(self.row):
             chessman_in_row = []
             for j in range(self.col):
@@ -214,8 +217,8 @@ class Chessboard(View):
             self.chessman_list.append(chessman_in_row)
 
     def draw(self, screen):
-        player_type=self.game_core.get_cur_player_type()
-        player_number=self.game_core.get_cur_player_number()
+        player_type = self.game_core.get_cur_player_type()
+        player_number = self.game_core.get_cur_player_number()
         # draw the chessboard
         # background
         pygame.draw.rect(screen, self.color, (self.x, self.y, (self.col + PADDING_RATIO * 2 - 1) * self.grid_size,
@@ -245,16 +248,16 @@ class Chessboard(View):
                 elif player_type == GAME_AI_MOVE or player_type == GAME_NO_ONE_MOVE:
                     self.chessman_list[i][j].draw(screen, SPACE_NUMBER)  # disable the animation on touch
 
-    '''
-    name: get_nearest_chessman
-    description: get the chessman object if the position is in the chessman
-    param {*} self
-    param {*} x
-    param {*} y
-    return {*} the index of the button, -1 if not in the button
-    '''
-
     def get_nearest_chessman(self, x, y):
+        """
+        get the nearest chessman by the mouse position
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+
+        Returns: the index of the nearest chessman
+
+        """
         # get the nearest chessman
         for i in range(self.row):
             for j in range(self.col):
@@ -262,16 +265,16 @@ class Chessboard(View):
                     return i, j
         return -1, -1
 
-    '''
-    name: process_click
-    description: process the click event
-    param {*} self
-    param {*} x
-    param {*} y
-    return {*} return the index of the chessman if the click is in the chessman, -1 if not
-    '''
-
     def process_click(self, x, y):
+        """
+        process the click event
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+
+        Returns: whether the click has make a valid move, return the move position
+
+        """
         cur_player_type = self.game_core.get_cur_player_type()
         cur_player_number = self.game_core.get_cur_player_number()
         # process the click event
@@ -285,14 +288,16 @@ class Chessboard(View):
                 return i, j
         return -1, -1
 
-    '''
-    name: process_mouse_move
-    description: process the touch event
-    param {*}
-    return {*}
-    '''
-
     def process_mouse_move(self, x, y):
+        """
+        process the mouse move event
+        Args:
+            x: the x position of the mouse
+            y: the y position of the mouse
+
+        Returns:
+
+        """
         cur_player_type = self.game_core.get_cur_player_type()
         # process the click event
         if cur_player_type != GAME_HUMAN_MOVE:
@@ -303,3 +308,150 @@ class Chessboard(View):
                     self.chessman_list[i][j].update_state(BUTTON_STATE_ON_TOUCH)
                 else:
                     self.chessman_list[i][j].update_state(BUTTON_STATE_DEFAULT)
+
+
+# the plot view of the game
+class PlotView(View):
+    def __init__(self, x, y, color, id, width, height, font_size, cnt_in_screen=-1) -> None:
+        super().__init__(x, y, color, id)
+        self.val = []
+        self.cnt = 0
+        self.max_val = 0
+        self.min_val = 0
+        self.width = width
+        self.height = height
+        self.font_size = font_size
+        self.left_boundary = 0
+        self.down_boundary = 0
+        self.right_boundary = 0
+        self.up_boundary = 0
+        if min(self.width, self.height) < PLOT_VIEW_PADDING * 2:
+            self.padding = 0
+        else:
+            self.padding = PLOT_VIEW_PADDING
+        self.up_text = TextView(self.x + self.padding, self.y + self.padding, WINDOW_TEXT_COLOR, "up",
+                                str(self.max_val), self.font_size)
+        self.down_text = TextView(self.x + self.padding, self.y + self.padding, WINDOW_TEXT_COLOR, "down",
+                                  str(self.min_val), self.font_size)
+        self.left_text = TextView(self.x + self.padding, self.y + self.padding, WINDOW_TEXT_COLOR, "left", str(0),
+                                  self.font_size)
+        self.right_text = TextView(self.x + self.padding, self.y + self.padding, WINDOW_TEXT_COLOR, "right",
+                                   str(len(self.val)), self.font_size)
+        self.update_text_view()
+
+    def insert(self, val):
+        """
+        insert element into the plot
+        Args:
+            val: the value of the new point
+
+        Returns:
+
+        """
+        self.val.append(val)
+        # update the max and min value
+        self.max_val = max(self.val)
+        self.min_val = min(self.val)
+        self.cnt += 1
+        self.update_text_view()
+
+    def pop(self):
+        """
+        pop a value from the val list
+        Args:
+
+        Returns:
+
+        """
+        self.val.pop()
+        self.max_val = max(self.val)
+        self.min_val = min(self.val)
+        self.cnt -= 1
+        self.update_text_view()
+
+    def update_boundary(self):
+        """
+        update the boundary of the display area
+        Returns:
+
+        """
+        self.left_boundary = self.up_text.get_width() + self.x + self.padding
+        self.down_boundary = self.y + self.height - self.padding - self.left_text.get_height()
+        self.right_boundary = self.x + self.width - self.padding
+        self.up_boundary = self.y + self.padding
+
+    def update_text_view(self):
+        """
+        update the text view text and position, and update the boundary
+        Returns:
+
+        """
+        self.up_text.set_text(str(self.max_val))
+        self.up_text.set_pos(self.x + self.padding, self.y + self.padding)
+        self.down_text.set_text(str(self.min_val))
+        self.down_text.set_pos(self.x + self.padding,
+                               self.y + self.height - self.padding - self.down_text.get_height() * 2)
+        self.left_text.set_text(str(0))
+        self.left_text.set_pos(self.x + self.padding + self.up_text.get_width(),
+                               self.y + self.height - self.padding - self.left_text.get_height())
+        self.right_text.set_text(str(self.cnt))
+        self.right_text.set_pos(self.x + self.width - self.padding - self.right_text.get_width(),
+                                self.y + self.height - self.padding - self.right_text.get_height())
+        self.update_boundary()
+
+    def transform_pos(self, x, y) -> Tuple[int, int]:
+        """
+        transform the actual value into the position on screen
+        Args:
+            x: the x coordinate
+            y: the value
+
+        Returns: the position on screen
+
+        """
+        if self.cnt == 1:
+            ans_x = (self.left_boundary + self.right_boundary) // 2
+            ans_y = (self.up_boundary + self.down_boundary) // 2
+        else:
+            ans_x = self.left_boundary + x / (self.cnt - 1) * (self.right_boundary - self.left_boundary)
+            ans_y = self.up_boundary + ((self.max_val - y) / (self.max_val - self.min_val)) * (
+                    self.down_boundary - self.up_boundary)
+        return ans_x, ans_y
+
+    def draw(self, screen):
+        """
+        draw the plot out on the screen
+        Args:
+            screen: the pygame surface
+
+        Returns:
+
+        """
+        # draw the background square
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+
+        # draw the text views
+        self.draw_text_view(screen)
+
+        # draw the plot
+        last_pos=(0,0)
+        for i in range(self.cnt):
+            actual_pos = self.transform_pos(i, self.val[i])
+            pygame.draw.circle(screen, (255, 0, 0), actual_pos, 3)
+            if i >= 1:
+                pygame.draw.line(screen, (0, 0, 255), last_pos, actual_pos)
+            last_pos = self.transform_pos(i, self.val[i])
+
+    def draw_text_view(self, screen):
+        """
+        draw the text view
+        Args:
+            screen:
+
+        Returns:
+
+        """
+        self.up_text.draw(screen)
+        self.down_text.draw(screen)
+        self.left_text.draw(screen)
+        self.right_text.draw(screen)
