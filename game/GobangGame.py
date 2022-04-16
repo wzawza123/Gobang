@@ -94,27 +94,32 @@ class GobangGame:
         self.display_chessmanual()
         pass
 
-    def undo_move(self) -> None:
+    def undo_move(self) -> bool:
+        """
+        undo the last move
+        Returns:whether undo successfully
+
+        """
         if self.curIndex > 1:
             self.curIndex -= 1
             pos = get_position_by_number(self.chessManual, self.curIndex)
+            print("will undo: ", self.curIndex)
             assert (pos[0] != -1 and pos[1] != -1)
             self.chessManual[pos[0]][pos[1]] = 0
-            self.chessManual[self.curIndex - 1][self.curIndex - 1] = 0
             self.update_game_turn_backward()
+            return True
         else:
             # nothing has been done yet
-            pass
-
-    '''
-    name: stop game process
-    description: simply stop game process
-    param {*} self
-    return {*}
-    '''
+            return False
 
     def stop_game_process(self) -> None:
+        """
+        stop the game process
+        Returns:None
+
+        """
         self.curPlayerType = GAME_NO_ONE_MOVE
+
 
 def main():
     game = GobangGame()
