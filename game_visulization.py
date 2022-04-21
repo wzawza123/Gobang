@@ -22,7 +22,9 @@ def visualization_main():
     # init game object
     gameClass = GobangGame()
     # init the chessboard view
-    chessboard_view = Chessboard(x=50, y=50, color=CHESSBOARD_BG_COLOR, id="chessboard", game_core=gameClass)
+    chessboard_view = Chessboard(
+        x=WINDOW_CHESSBOARD_X, y=WINDOW_CHESSBOARD_Y, color=CHESSBOARD_BG_COLOR, id="chessboard", game_core=gameClass)
+    print(chessboard_view.get_size())
     # init pygame window
     screen = init_pygame_window()
     # init the background
@@ -30,13 +32,15 @@ def visualization_main():
     background = background.convert()
     background.fill(WINDOW_BG_COLOR)
     # init the text view
-    text_view = TextView(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_TEXT_COLOR, 0, 'hello', 40)
+    status_board_view = TextView(0, WINDOW_STATUS_BOARD_Y, WINDOW_TEXT_COLOR, 0, 'hello', 40)
+    status_board_view.set_pos_middle_x(WINDOW_LEFT_PADDING, WINDOW_LEFT_EDGE)
     # init the button view
     button_view = SquareButton(x=800, y=600, color=WINDOW_BUTTON_AVAILABLE_COLOR, id="undo",
                                height=WINDOW_BUTTON_HEIGHT, width=WINDOW_BUTTON_WIDTH, text="undo",
                                text_size=WINDOW_BUTTON_TEXT_SIZE)
     # init the plot view
-    plot_view = PlotView(x=600, y=50, color=WINDOW_PLOT_COLOR, id="plot", font_size=20, width=400, height=200)
+    plot_view = PlotView(x=WINDOW_PLOT_VIEW_X, y=WINDOW_PLOT_VIEW_Y, color=WINDOW_PLOT_COLOR,
+                         id="plot", font_size=20, width=WINDOW_PLOT_VIEW_WIDTH, height=WINDOW_PLOT_VIEW_HEIGHT)
     # game running flags
     isRunning = True
     # fps controller
@@ -58,17 +62,33 @@ def visualization_main():
                 # get the mouse position
                 mouse_pos = pygame.mouse.get_pos()
                 # check if the button is clicked
-                update_index = chessboard_view.process_click(mouse_pos[0], mouse_pos[1])
+                update_index = chessboard_view.process_click(
+                    mouse_pos[0], mouse_pos[1])
                 if update_index[0] != -1 and update_index[1] != -1:
                     # a valid move has been made
-                    plot_view.insert(randint(0, 100))
+                    plot_view.insert(randint(-100, 100))
                 if button_view.is_in_button(mouse_pos[0], mouse_pos[1]):
                     gameClass.undo_move()
                     plot_view.pop()
+        # update the view
+        game_result=gameClass.end_check()
+        if game_result == GAME_STILL_PLAYING:
+            if gameClass.get_cur_player_type() == GAME_HUMAN_MOVE:
+                status_board_view.set_text("human moving")
+            else:
+                status_board_view.set_text("AI moving")
+        else:
+            if game_result == GAME_END_ODD_WIN:
+                status_board_view.set_text("black wins")
+            elif game_result == GAME_END_EVEN_WIN:
+                status_board_view.set_text("white wins")
+
+        status_board_view.set_pos_middle_x(WINDOW_LEFT_PADDING, WINDOW_LEFT_EDGE)
+
         # draw the background
         screen.blit(background, (0, 0))
         # draw the text view
-        text_view.draw(screen)
+        status_board_view.draw(screen)
         # draw the chessboard
         chessboard_view.draw(screen)
         # draw the button

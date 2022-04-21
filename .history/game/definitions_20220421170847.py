@@ -1,16 +1,11 @@
-'''
-Description: 
-Date: 2022-04-11 10:34:14
-LastEditTime: 2022-04-21 17:16:07
-'''
 """
 Description: this file define some basic constant variables for the game
 Date: 2022-04-11 10:34:14
 LastEditTime: 2022-04-13 20:34:19
 """
 # the board size definitions
-BOARD_HEIGHT = 15
-BOARD_WIDTH = 15
+BOARD_HEIGHT = 8
+BOARD_WIDTH = 5
 # the chessman number definitions
 SPACE_NUMBER = 0
 

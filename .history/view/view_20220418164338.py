@@ -252,12 +252,12 @@ class Chessboard(View):
         return self.grid_size * (self.col - 1) + PADDING_RATIO * 2 * self.grid_size, self.grid_size * (
                     self.row - 1) + PADDING_RATIO * 2 * self.grid_size
 
-    def get_nearest_chessman(self, row, col):
+    def get_nearest_chessman(self, x, y):
         """
         get the nearest chessman by the mouse position
         Args:
-            row: row position of the mouse
-            col: col position of the mouse
+            x: x position of the mouse
+            y: y position of the mouse
 
         Returns: the index of the nearest chessman
 
@@ -265,7 +265,7 @@ class Chessboard(View):
         # get the nearest chessman
         for i in range(self.row):
             for j in range(self.col):
-                if self.chessman_list[i][j].is_in_button(row, col):
+                if self.chessman_list[i][j].is_in_button(x, y):
                     return i, j
         return -1, -1
 

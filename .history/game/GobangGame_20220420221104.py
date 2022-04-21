@@ -57,7 +57,7 @@ class GobangGame:
             print()
         print()
 
-    def update_human_move(self, row: int, col: int) -> None:
+    def update_human_move(self, x: int, y: int) -> None:
         """
         update the game process by human move
         Args:
@@ -67,8 +67,8 @@ class GobangGame:
         Returns: the result of end check after the move
 
         """
-        assert (0 <= row < BOARD_HEIGHT and 0 <= col < BOARD_WIDTH and self.get_cur_player_type() == GAME_HUMAN_MOVE)
-        self.chessManual[row][col] = self.curIndex
+        assert (0 <= x < BOARD_WIDTH and 0 <= y < BOARD_HEIGHT and self.get_cur_player_type() == GAME_HUMAN_MOVE)
+        self.chessManual[x][y] = self.curIndex
         self.curIndex += 1
         # update the game
         game_result = self.update_game_turn_forward()
