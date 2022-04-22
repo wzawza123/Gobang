@@ -7,13 +7,18 @@ from random import randint
 
 import pygame
 from abc import ABCMeta, abstractmethod
+
+import window
 from game.definitions import *
 from game.GobangGame import *
 # import the view classes
 from view.view import *
+from window.ai_vs_ai_menu import ai_vs_ai_menu
+from window.main_menu import main_menu
+from window.human_vs_ai_menu import human_vs_ai_menu
 
 
-def visualization_main():
+def game_window(screen, game_mode):
     """
     visualize the game process
     Returns:None
@@ -21,12 +26,16 @@ def visualization_main():
     """
     # init game object
     gameClass = GobangGame()
+    # check the branches depending on the game mode
+    if game_mode == "HUMAN VS AI":
+        first_player_type = human_vs_ai_menu(screen)
+    elif game_mode == "AI VS AI":
+        algorithm_id_odd, algorithm_id_even = ai_vs_ai_menu(screen)
+
     # init the chessboard view
     chessboard_view = Chessboard(
         x=WINDOW_CHESSBOARD_X, y=WINDOW_CHESSBOARD_Y, color=CHESSBOARD_BG_COLOR, id="chessboard", game_core=gameClass)
     print(chessboard_view.get_size())
-    # init pygame window
-    screen = init_pygame_window()
     # init the background
     background = pygame.Surface(screen.get_size())
     background = background.convert()
@@ -41,6 +50,10 @@ def visualization_main():
     # init the plot view
     plot_view = PlotView(x=WINDOW_PLOT_VIEW_X, y=WINDOW_PLOT_VIEW_Y, color=WINDOW_PLOT_COLOR,
                          id="plot", font_size=20, width=WINDOW_PLOT_VIEW_WIDTH, height=WINDOW_PLOT_VIEW_HEIGHT)
+    # init the switch view
+    switch_view = Switch(x=WINDOW_SWITCH_VIEW_X, y=WINDOW_SWITCH_VIEW_Y, color=WINDOW_SWITCH_COLOR, id="switch",
+                         width=WINDOW_SWITCH_VIEW_WIDTH, height=WINDOW_SWITCH_VIEW_HEIGHT, left_text="left",
+                         right_text="right", font_size=WINDOW_SWITCH_VIEW_FONT_SIZE)
     # game running flags
     isRunning = True
     # fps controller
@@ -71,7 +84,7 @@ def visualization_main():
                     gameClass.undo_move()
                     plot_view.pop()
         # update the view
-        game_result=gameClass.end_check()
+        game_result = gameClass.end_check()
         if game_result == GAME_STILL_PLAYING:
             if gameClass.get_cur_player_type() == GAME_HUMAN_MOVE:
                 status_board_view.set_text("human moving")
@@ -95,6 +108,9 @@ def visualization_main():
         button_view.draw(screen)
         # draw the plot
         plot_view.draw(screen)
+        # draw the switch
+        switch_view.set_state("right")
+        switch_view.draw(screen)
         # update the screen
         pygame.display.flip()
         # update game result
@@ -113,10 +129,14 @@ def init_pygame_window():
 
     """
     pygame.init()
-    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    init_screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption('Gobang')
-    return screen
+    return init_screen
 
 
 if __name__ == '__main__':
-    visualization_main()
+    screen = init_pygame_window()
+    while True:
+        game_mode = main_menu(screen)
+        print(game_mode)
+        game_window(screen, game_mode)

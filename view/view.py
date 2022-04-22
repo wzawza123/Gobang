@@ -82,6 +82,17 @@ class TextView(View):
         self.text_rendered = self.font.render(self.text, True, self.color)
         screen.blit(self.text_rendered, (self.x, self.y))
 
+    def set_pos_right_x(self, right_bound):
+        """
+        set the position of current view at the right of given boundary of x
+        Args:
+            right_bound: the right boundary of x
+
+        Returns:
+
+        """
+        self.x = right_bound - self.text_rendered.get_width()
+
     def set_pos_middle_x(self, left, right):
         """
         set the position of current view at the middle of given boundary of x
@@ -250,7 +261,7 @@ class Chessboard(View):
 
     def get_size(self):
         return self.grid_size * (self.col - 1) + PADDING_RATIO * 2 * self.grid_size, self.grid_size * (
-                    self.row - 1) + PADDING_RATIO * 2 * self.grid_size
+                self.row - 1) + PADDING_RATIO * 2 * self.grid_size
 
     def get_nearest_chessman(self, row, col):
         """
@@ -482,3 +493,75 @@ class PlotView(View):
                          (self.right_boundary, self.up_boundary))
         pygame.draw.line(screen, (255, 0, 255), (self.left_boundary, self.down_boundary),
                          (self.right_boundary, self.down_boundary))
+
+
+# the text button
+class TextButton(Button):
+    def __init__(self, x, y, color, id, text, font_size=20):
+        super().__init__(x, y, color, id)
+        self.text = text
+        self.font_size = font_size
+        self.text_view=TextView(x,y,color,"text view for text button",text,font_size)
+        self.height=self.text_view.get_height()
+        self.width=self.text_view.get_width()
+
+    def draw(self, screen):
+        # draw the textview
+        self.text_view.draw(screen)
+
+    def is_in_button(self, x, y):
+        return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
+
+    def get_text(self):
+        return self.text_view.get_text()
+
+# the switch object
+class Switch(Button):
+    def __init__(self, x, y, color, id, width, height, left_text, right_text, font_size) -> None:
+        super().__init__(x, y, color, id)
+        self.width = width
+        self.height = height
+        # init the textview
+        self.left_text_view = TextView(x, y, WINDOW_TEXT_COLOR, "left_text", left_text, font_size)
+        self.left_text_view.set_pos_right_x(self.x)
+        self.right_text_view = TextView(x, y, WINDOW_TEXT_COLOR, "right_text", right_text, font_size)
+        self.right_text_view.set_x(self.x + self.width)
+        self.current_state = "left"
+
+    def draw(self, screen):
+        self.left_text_view.draw(screen)
+        self.right_text_view.draw(screen)
+        if self.current_state == "left":
+            pygame.draw.rect(screen, self.color, (self.x, self.y, self.width / 3, self.height))
+            pygame.draw.rect(screen, WINDOW_BUTTON_AVAILABLE_COLOR,
+                             (self.x + self.width / 3, self.y, self.width / 3 * 2, self.height))
+        else:
+            pygame.draw.rect(screen, self.color,
+                             (self.x + self.width - self.width / 3, self.y, self.width / 3, self.height))
+            pygame.draw.rect(screen, WINDOW_BUTTON_AVAILABLE_COLOR, (self.x, self.y, self.width / 3 * 2, self.height))
+
+    def is_in_button(self, x, y):
+        return self.x <= x <= self.x + self.width and self.y <= y <= self.y + self.height
+
+    def set_state(self, state: str = "left"):
+        """
+        set the state of the switch
+        Args:
+            state: "left" or "right"
+
+        Returns:
+
+        """
+        self.current_state = state
+
+    def get_state(self) -> str:
+        return self.current_state
+
+    def set_pos_middle_x(self, left, right):
+        self.x = (left + right) / 2 - self.width / 2
+
+    def change_state(self):
+        if self.current_state == "left":
+            self.current_state = "right"
+        else:
+            self.current_state = "left"
