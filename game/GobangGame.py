@@ -1,7 +1,7 @@
 '''
 Description: 
 Date: 2022-04-11 10:33:06
-LastEditTime: 2022-05-03 15:27:29
+LastEditTime: 2022-05-03 16:47:04
 '''
 """
 Description: this file defines a Gobang game class which control the basic game process
@@ -38,8 +38,8 @@ class GobangGame:
         """
         self.chessManual = [[0 for i in range(BOARD_WIDTH)] for j in range(BOARD_HEIGHT)]
         self.curIndex = 1
-        if self.curGameMode == "HUMAN_VS_HUMAN":
-            self.curPlayerType = GAME_HUMAN_MOVE
+        self.curPlayerType=self.firstPlayerType
+        
 
     def end_check(self) -> int:
         """
@@ -177,6 +177,7 @@ class GobangGame:
 
         """
         self.curGameMode = "HUMAN_VS_HUMAN"
+        self.firstPlayerType=GAME_HUMAN_MOVE
     
     def select_game_mode_pvai(self,first_to_go,algorithm_name) -> None:
         """
