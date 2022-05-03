@@ -1,14 +1,8 @@
-'''
-Description: 
-Date: 2022-04-11 10:33:06
-LastEditTime: 2022-05-03 15:27:29
-'''
 """
 Description: this file defines a Gobang game class which control the basic game process
 Date: 2022-04-11 10:33:06
 LastEditTime: 2022-04-13 21:02:04
 """
-from game.Valuation_Basic import Valuation_Basic
 from game.definitions import *
 from game.common import *
 from game.Search import *
@@ -21,12 +15,9 @@ class GobangGame:
                    range(BOARD_HEIGHT)]  # the game manual record the whole game process
     curIndex = 1  # the index of next run
     curPlayerType = GAME_HUMAN_MOVE
-    firstPlayerType=GAME_HUMAN_MOVE
     curGameMode=""
     searching_class_odd=0
     searching_class_even=0
-    evalView=None
-    evalClass=Valuation_Basic()
     def __init__(self) -> None:
         self.restart()
 
@@ -94,15 +85,7 @@ class GobangGame:
 
         """
         assert (self.get_cur_player_type() == GAME_AI_MOVE)
-        print("start searching")
-        if self.curIndex%2==1:
-            self.searching_class_odd.Direction(self.chessManual,self.curIndex);
-            next_step=self.searching_class_odd.nextStep
-        else:
-            self.searching_class_even.Direction(self.chessManual,self.curIndex);
-            next_step=self.searching_class_even.nextStep
-        self.chessManual[next_step[0]][next_step[1]] = self.curIndex
-        print("next step:",next_step)
+        
         self.update_game_turn_forward()
 
     def update_game_turn_forward(self) -> int:
@@ -111,7 +94,6 @@ class GobangGame:
         Returns:the end check result
 
         """
-        self.update_eval_view()
         self.curIndex += 1
         if self.curGameMode == "HUMAN_VS_HUMAN":
             # no need to change the player type
@@ -126,21 +108,13 @@ class GobangGame:
         self.display_chessmanual()
         end_result = self.end_check()
         if end_result == GAME_STILL_PLAYING:
+            # self.curPlayerType=GAME_AI_MOVE if self.curPlayerType==GAME_HUMAN_MOVE else GAME_HUMAN_MOVE
             return end_result
             pass
         else:
             return end_result
 
     def update_game_turn_backward(self):
-        if self.curGameMode=="HUMAN_VS_HUMAN":
-            pass
-        elif self.curGameMode=="HUMAN_VS_AI":
-            if self.curPlayerType==GAME_HUMAN_MOVE:
-                self.curPlayerType=GAME_AI_MOVE
-            else:
-                self.curPlayerType=GAME_HUMAN_MOVE
-        else:
-            pass
         self.display_chessmanual()
         pass
 
@@ -178,7 +152,7 @@ class GobangGame:
         """
         self.curGameMode = "HUMAN_VS_HUMAN"
     
-    def select_game_mode_pvai(self,first_to_go,algorithm_name) -> None:
+    def select_game_mode_pvai(self,first_to_go) -> None:
         """
         select game mode as pvai
         Returns:None
@@ -186,40 +160,11 @@ class GobangGame:
         """
         self.curGameMode = "HUMAN_VS_AI"
         self.curPlayerType = first_to_go
-        if algorithm_name=="faster":
-            target_alg_class=Search_Fast()
-        else:
-            target_alg_class=Search()
         if first_to_go == GAME_HUMAN_MOVE:
-            self.searching_class_even=target_alg_class;
-            self.firstPlayerType=GAME_HUMAN_MOVE
+            self.searching_class_even=Search_Fast();
         else:
-            self.searching_class_odd=target_alg_class;
-            self.firstPlayerType=GAME_AI_MOVE
+            self.searching_class_odd=Search_Fast();
 
-    def select_game_mode_aivai(self,first_algorithm) -> None:
-        """
-        select game mode as aivai
-        Returns:None
-
-        """
-        self.curGameMode = "AI_VS_AI"
-        if first_algorithm=="faster":
-            self.searching_class_odd=Search_Fast()
-            self.searching_class_even=Search()
-        else:
-            self.searching_class_odd=Search()
-            self.searching_class_even=Search_Fast()
-        self.firstPlayerType=GAME_AI_MOVE
-        self.curPlayerType=GAME_AI_MOVE
-
-    def bind_eval_view(self,evalView):
-        self.evalView=evalView
-    
-    def update_eval_view(self):
-        if self.evalView!=None:
-            eval_result=self.evalClass.Valuation(self.chessManual,self.curIndex)
-            self.evalView.insert(eval_result)
 
 def main():
     game = GobangGame()

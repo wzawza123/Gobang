@@ -508,22 +508,6 @@ class PlotView(View):
         while self.cnt > 0:
             self.pop()
 
-    def get_width(self):
-        """
-        get the width of the plot
-        Returns:
-
-        """
-        return self.width
-    
-    def get_height(self):
-        """
-        get the height of the plot
-        Returns:
-
-        """
-        return self.height
-
 
 # the text button
 class TextButton(Button):

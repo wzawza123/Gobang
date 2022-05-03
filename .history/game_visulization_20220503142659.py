@@ -28,11 +28,10 @@ def game_window(screen, game_mode):
     gameClass = GobangGame()
     # check the branches depending on the game mode
     if game_mode == "HUMAN VS AI":
-        first_player_type,algorithm_name = human_vs_ai_menu(screen)
-        gameClass.select_game_mode_pvai(first_player_type,algorithm_name)
+        first_player_type = human_vs_ai_menu(screen)
+        gameClass.select_game_mode_pvai(first_player_type)
     elif game_mode == "AI VS AI":
-        algorithm_id_odd = ai_vs_ai_menu(screen)
-        gameClass.select_game_mode_aivai(algorithm_id_odd)
+        algorithm_id_odd, algorithm_id_even = ai_vs_ai_menu(screen)
         
     else:
         gameClass.select_game_mode_pvp()
@@ -57,9 +56,10 @@ def game_window(screen, game_mode):
     # init the plot view
     plot_view = PlotView(x=WINDOW_PLOT_VIEW_X, y=WINDOW_PLOT_VIEW_Y, color=WINDOW_PLOT_COLOR,
                          id="plot", font_size=20, width=WINDOW_PLOT_VIEW_WIDTH, height=WINDOW_PLOT_VIEW_HEIGHT)
-    plot_title = TextView(0, plot_view.get_y()+plot_view.get_height()+20, WINDOW_TEXT_COLOR, 0, 'evaluation for each step', 30)
-    plot_title.set_pos_middle_x(plot_view.get_x(), plot_view.get_x() + plot_view.get_width())
-    gameClass.bind_eval_view(plot_view)
+    # init the switch view
+    switch_view = Switch(x=WINDOW_SWITCH_VIEW_X, y=WINDOW_SWITCH_VIEW_Y, color=WINDOW_SWITCH_COLOR, id="switch",
+                         width=WINDOW_SWITCH_VIEW_WIDTH, height=WINDOW_SWITCH_VIEW_HEIGHT, left_text="left",
+                         right_text="right", font_size=WINDOW_SWITCH_VIEW_FONT_SIZE)
     # game running flags
     isRunning = True
     # fps controller
@@ -82,36 +82,25 @@ def game_window(screen, game_mode):
                 mouse_pos = pygame.mouse.get_pos()
                 # check if the button is clicked
                 update_index = chessboard_view.process_click(mouse_pos[0], mouse_pos[1])
-                # if update_index[0] != -1 and update_index[1] != -1:
-                #     # a valid move has been made
-                #     plot_view.insert(randint(-100, 100))
+                if update_index[0] != -1 and update_index[1] != -1:
+                    # a valid move has been made
+                    plot_view.insert(randint(-100, 100))
                 if undo_button.is_in_button(mouse_pos[0], mouse_pos[1]):
-                    if game_mode=="HUMAN VS AI":
-                        # need undo twice for human move
-                        gameClass.undo_move()
-                        plot_view.pop()
-                        gameClass.undo_move()
-                        plot_view.pop()
-                    else:
-                        gameClass.undo_move()
-                        plot_view.pop()
-                    
+                    gameClass.undo_move()
+                    plot_view.pop()
                 if restart_button.is_in_button(mouse_pos[0], mouse_pos[1]):
                     gameClass.restart()
                     plot_view.clear()
-        
+        # update the game
+        if gameClass.get_cur_player_type==GAME_AI_MOVE:
+            gameClass.update_ai_move()
         # update the view
         game_result = gameClass.end_check()
         if game_result == GAME_STILL_PLAYING:
-            # if gameClass.get_cur_player_type() == GAME_HUMAN_MOVE:
-            #     status_board_view.set_text("human moving")
-            # else:
-            #     status_board_view.set_text("AI moving")
-            # display which color to move
-            if gameClass.get_cur_player_number()%2 == 1:
-                status_board_view.set_text("black to move")
+            if gameClass.get_cur_player_type() == GAME_HUMAN_MOVE:
+                status_board_view.set_text("human moving")
             else:
-                status_board_view.set_text("white to move")
+                status_board_view.set_text("AI moving")
         else:
             if game_result == GAME_END_ODD_WIN:
                 status_board_view.set_text("black wins")
@@ -131,17 +120,16 @@ def game_window(screen, game_mode):
         restart_button.draw(screen)
         # draw the plot
         plot_view.draw(screen)
-        plot_title.draw(screen)
+        # draw the switch
+        switch_view.set_state("right")
+        switch_view.draw(screen)
         # update the screen
         pygame.display.flip()
         # update game result
         game_result = gameClass.end_check()
         if game_result != GAME_STILL_PLAYING:
             gameClass.stop_game_process()
-            # print("game end with result:", game_result)
-        else:
-            if gameClass.get_cur_player_type() == GAME_AI_MOVE:
-                gameClass.update_ai_move()
+            print("game end with result:", game_result)
     # quit the game
     pygame.quit()
 

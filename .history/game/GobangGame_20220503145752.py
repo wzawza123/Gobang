@@ -1,7 +1,7 @@
 '''
 Description: 
 Date: 2022-04-11 10:33:06
-LastEditTime: 2022-05-03 15:27:29
+LastEditTime: 2022-05-03 14:56:13
 '''
 """
 Description: this file defines a Gobang game class which control the basic game process
@@ -132,15 +132,6 @@ class GobangGame:
             return end_result
 
     def update_game_turn_backward(self):
-        if self.curGameMode=="HUMAN_VS_HUMAN":
-            pass
-        elif self.curGameMode=="HUMAN_VS_AI":
-            if self.curPlayerType==GAME_HUMAN_MOVE:
-                self.curPlayerType=GAME_AI_MOVE
-            else:
-                self.curPlayerType=GAME_HUMAN_MOVE
-        else:
-            pass
         self.display_chessmanual()
         pass
 
@@ -178,7 +169,7 @@ class GobangGame:
         """
         self.curGameMode = "HUMAN_VS_HUMAN"
     
-    def select_game_mode_pvai(self,first_to_go,algorithm_name) -> None:
+    def select_game_mode_pvai(self,first_to_go) -> None:
         """
         select game mode as pvai
         Returns:None
@@ -186,32 +177,12 @@ class GobangGame:
         """
         self.curGameMode = "HUMAN_VS_AI"
         self.curPlayerType = first_to_go
-        if algorithm_name=="faster":
-            target_alg_class=Search_Fast()
-        else:
-            target_alg_class=Search()
         if first_to_go == GAME_HUMAN_MOVE:
-            self.searching_class_even=target_alg_class;
+            self.searching_class_even=Search_Fast();
             self.firstPlayerType=GAME_HUMAN_MOVE
         else:
-            self.searching_class_odd=target_alg_class;
+            self.searching_class_odd=Search_Fast();
             self.firstPlayerType=GAME_AI_MOVE
-
-    def select_game_mode_aivai(self,first_algorithm) -> None:
-        """
-        select game mode as aivai
-        Returns:None
-
-        """
-        self.curGameMode = "AI_VS_AI"
-        if first_algorithm=="faster":
-            self.searching_class_odd=Search_Fast()
-            self.searching_class_even=Search()
-        else:
-            self.searching_class_odd=Search()
-            self.searching_class_even=Search_Fast()
-        self.firstPlayerType=GAME_AI_MOVE
-        self.curPlayerType=GAME_AI_MOVE
 
     def bind_eval_view(self,evalView):
         self.evalView=evalView

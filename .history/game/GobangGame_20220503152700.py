@@ -1,7 +1,7 @@
 '''
 Description: 
 Date: 2022-04-11 10:33:06
-LastEditTime: 2022-05-03 15:27:29
+LastEditTime: 2022-05-03 15:17:00
 '''
 """
 Description: this file defines a Gobang game class which control the basic game process
@@ -196,22 +196,6 @@ class GobangGame:
         else:
             self.searching_class_odd=target_alg_class;
             self.firstPlayerType=GAME_AI_MOVE
-
-    def select_game_mode_aivai(self,first_algorithm) -> None:
-        """
-        select game mode as aivai
-        Returns:None
-
-        """
-        self.curGameMode = "AI_VS_AI"
-        if first_algorithm=="faster":
-            self.searching_class_odd=Search_Fast()
-            self.searching_class_even=Search()
-        else:
-            self.searching_class_odd=Search()
-            self.searching_class_even=Search_Fast()
-        self.firstPlayerType=GAME_AI_MOVE
-        self.curPlayerType=GAME_AI_MOVE
 
     def bind_eval_view(self,evalView):
         self.evalView=evalView
